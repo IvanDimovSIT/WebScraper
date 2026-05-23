@@ -3,9 +3,10 @@ module Types where
 import Data.Aeson (ToJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
+import Text.HTML.Scalpel (URL)
 
 data ScraperConfig = ScraperConfig
-  { scraperConfigUrl :: !String,
+  { scraperConfigUrl :: URL,
     scraperConfigDepth :: !Int
   }
   deriving (Show)
@@ -13,7 +14,7 @@ data ScraperConfig = ScraperConfig
 data Quote = Quote
   { quoteText :: !Text,
     quoteAuthor :: !Text,
-    quoteTags :: ![Text]
+    quoteTags :: [Text]
   }
   deriving (Show, Generic)
 

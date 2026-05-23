@@ -10,6 +10,7 @@ import Types
     QuotePage (..),
     ScraperConfig (scraperConfigDepth, scraperConfigUrl),
   )
+import Utils (doIfNothing)
 
 scrapeSite :: ScraperConfig -> IO [Quote]
 scrapeSite config = scrapeSiteLoop baseUrl baseUrl depth
@@ -37,11 +38,12 @@ scrapeSiteLoop !baseUrl !url !depth
 scrapePage :: URL -> IO QuotePage
 scrapePage url = do
   maybePage <- scrapeURL url scraperProcessor
-  case maybePage of
-    Just page -> return page
-    Nothing -> do
-      putStrLn $ "Can't connect to " ++ url
-      return QuotePage {quotePageQuotes = [], quotePageNextPage = Nothing}
+  doIfNothing
+    maybePage
+    ( do
+        putStrLn $ "Error scraping " ++ url
+        return QuotePage {quotePageQuotes = [], quotePageNextPage = Nothing}
+    )
 
 scraperProcessor :: Scraper Text QuotePage
 scraperProcessor = do
